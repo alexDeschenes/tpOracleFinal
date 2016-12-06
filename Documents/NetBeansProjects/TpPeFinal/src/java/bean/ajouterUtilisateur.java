@@ -12,6 +12,9 @@ import classe.Typemembre;
 import java.util.Date;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -19,6 +22,7 @@ import javax.faces.bean.RequestScoped;
  */
 @ManagedBean
 @RequestScoped
+@SessionScoped
 public class ajouterUtilisateur {
 
     private MembreUtil MembreUtil;
@@ -58,7 +62,11 @@ public class ajouterUtilisateur {
         else
         {  
           message = "Le client a été trouvé!";
+          FacesContext facesContext = FacesContext.getCurrentInstance();
+           HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
+           session.setAttribute("nom", unMem.getNomutil());
         }
+  
         return unMem;
        
     }
