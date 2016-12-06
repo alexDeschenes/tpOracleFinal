@@ -64,7 +64,8 @@ public class ajouterUtilisateur {
           message = "Le client a été trouvé!";
           FacesContext facesContext = FacesContext.getCurrentInstance();
            HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
-           session.setAttribute("nom", unMem.getNomutil());
+           session.setAttribute("id", unMem.getIdmembre());
+           session.setAttribute("nom", unMem.getIdmembre());
         }
   
         return unMem;
