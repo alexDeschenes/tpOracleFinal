@@ -11,10 +11,17 @@ import classe.Restaurant;
 import classe.Typecuisine;
 import classe.Typemembre;
 import classe.restaurantUtil;
+import java.io.File;
 import static java.util.Collections.list;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import java.io.IOException;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.servlet.http.Part;
+
+
 
 @ManagedBean
 @RequestScoped
@@ -27,7 +34,7 @@ public class gestionRestos {
      private String siteweb;
      private int idMembre;
      private long prixmoyen;
-     private String image;
+     private Part image;
      private String message;
      private String infoRestoRecherche;
     /**
@@ -40,8 +47,14 @@ public class gestionRestos {
     public void ajouterResto()
     {
        
-        restoUti.ajouterResto(description, nom, siteweb, idMembre, image, typecuisine);
+        restoUti.ajouterResto(description, nom, siteweb, idMembre, image);
         message = "Le client a bien été ajouté!";
+    }
+    public Restaurant getResto(int id)
+    {
+       
+       Restaurant unResto = restoUti.getRestoId(id);
+        return unResto;
     }
     
     public List<Restaurant> AfficherRestosRecents(){
@@ -80,7 +93,7 @@ public class gestionRestos {
     public void setPrixMoyen(long prixmoyen) {
         this.prixmoyen = prixmoyen;
     }
-     public void setImage(String image) {
+     public void setImage(Part image) {
         this.image = image;
     }
       public String getNom() {
@@ -89,7 +102,7 @@ public class gestionRestos {
     public String getDescription() {
        return this.description;
     }
-     public String getImage() {
+     public Part getImage() {
        return this.image;
     }
        public String getMessage() {

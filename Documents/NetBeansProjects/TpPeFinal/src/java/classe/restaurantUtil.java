@@ -6,6 +6,8 @@
 package classe;
 
 import java.util.List;
+import java.io.File;
+import javax.servlet.http.Part;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -17,24 +19,27 @@ import org.hibernate.Transaction;
 public class restaurantUtil {
      Session session = null;
 
-    public void ajouterResto(String description, String nom,String siteweb, int prix,String img,Typecuisine type )
+    public void ajouterResto(String description, String nom,String siteweb, int prix,Part img )
     {
             Restaurant unResto = new Restaurant();
             unResto.setDescription(description);
             unResto.setNom(nom);
             unResto.setSiteweb(siteweb);
             unResto.setPrixmoyen(prix);
-            unResto.setImage(img);
-            unResto.setTypecuisine(type);
-          
+            String path = getFilename(img);
+            
+            unResto.setImage(path);
+            Typecuisine typeCus = new Typecuisine();
+            typeCus.setTypecui("épicié");
+            unResto.setTypecuisine(typeCus);
                   
             Transaction tx = null;
             this.session = HibernateUtil.getSessionFactory().openSession();
         
         try{    
             tx = session.beginTransaction();
-			
-	    // l'ajout ne se fait pas car il reste des champs null qui ne doivent pas l'être
+            session.saveOrUpdate(typeCus);
+	    // l'ajout ne se fait typeCus car il reste des champs null qui ne doivent pas l'être
             
             session.saveOrUpdate(unResto);
             tx.commit();
@@ -121,7 +126,7 @@ public class restaurantUtil {
             
             tx = session.beginTransaction();
             
-            Query requete = session.createQuery("FROM Restaurant");
+            Query requete = session.createQuery("FROM Restaurant ORDER BY Idresto DESC");
             requete.setFirstResult(0);
             requete.setMaxResults(3);
            
@@ -155,6 +160,49 @@ public class restaurantUtil {
        
         this.session.close();
         return listeResto;
+    }
+     // source : http://www.ramkitech.com/2013/06/file-upload-is-easy-in-jsf22.html
+    private static String getFilename(Part part) {
+        for (String cd : part.getHeader("content-disposition").split(";")) {
+            if (cd.trim().startsWith("filename")) {
+                String filename = cd.substring(cd.indexOf('=') + 1).trim().replace("\"", "");
+                return filename.substring(filename.lastIndexOf('/') + 1).substring(filename.lastIndexOf('\\') + 1); // MSIE fix.
+            }
+        }
+        return null;
+    }
+       public Restaurant getRestoId(int id)
+    {
+        Restaurant unResto = null;
+        List<Restaurant> listeRestaurants = null;
+        
+        Transaction tx = null;
+        this.session = HibernateUtil.getSessionFactory().openSession();
+       
+        try {
+            
+            tx = session.beginTransaction();
+            
+            // Liste de tous les livres
+            Query resto = session.createQuery("from Restaurant where idresto=:id");
+            resto.setInteger("id",id);
+            listeRestaurants = resto.list();
+           
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+       
+        this.session.close();
+        if (listeRestaurants.size()!=0)
+        {
+            return listeRestaurants.get(0);
+        }
+        else
+        {
+          return null;
+        }
+    
     }
     
     
