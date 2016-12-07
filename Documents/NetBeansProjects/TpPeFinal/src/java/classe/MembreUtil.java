@@ -6,7 +6,9 @@
 package classe;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -50,12 +52,16 @@ public class MembreUtil {
         }
         else
         {
+            
+            
             Commentaire unCommentaire = new Commentaire();
             unCommentaire.setContenu(contenu);
             unCommentaire.setDatecreation(datecreation);
             unCommentaire.setMembre(membre);
             unCommentaire.setNote(note);
             unCommentaire.setRestaurant(restaurant);
+            Set setCommentaire =membre.getCommentaires() ;
+            setCommentaire.add(unCommentaire);
    
             this.session = HibernateUtil.getSessionFactory().openSession();
         
